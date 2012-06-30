@@ -1,5 +1,6 @@
+from collections import deque
+
 from src.player import Player
-from src.deck import Deck
 from src.shoe import Shoe
 
 
@@ -7,33 +8,45 @@ class Board(object):
 
     def __init__(self, n_players=1, n_decks=1):
         """Initialization."""
-        self.players = []
-        self.shoe = None
+        self.players = {}
 
         self.generate_players(n_players)
-        self.generate_shoe(n_decks)
+        self.shoe = Shoe(n_decks=n_decks)
+        self.turns = deque()
 
     def generate_players(self, n_players):
         """Generate players for the board. (includes Dealer)"""
-        self.players.append(Player(name='D0'))
+        self.players[0] = Player(name='D0')
         for i in xrange(n_players):
-            name = 'P%d' % (i+1,)
-            self.players.append(Player(name))
-
-    def generate_shoe(self, n_decks):
-        """Generate a shoe of cards from one or many decks."""
-        cards = []
-        for _ in xrange(n_decks):
-            deck = Deck()
-            cards.extend(deck.cards)
-        self.shoe = Shoe(cards=cards)
+            index = i + 1
+            name = 'P%d' % (index,)
+            self.players[index] = Player(name)
 
     def deal(self):
         """Deal out two cards to each player."""
+
+        # There probably aren't enough cards for a new game.
+        if len(self.shoe.cards) < len(self.players) * 4:
+            return
+
         for _ in xrange(2):
-            for player in self.players:
+            for player_index in sorted(self.players.keys()):
+
+                self.turns.append(self.players[player_index]) 
+
                 card = self.shoe.get_card()
-                player.hand.append(card)
+                #if not card:
+                #    return
+
+                self.players[player_index].hand.append(card)
+
+        # Move the deal from first position to last position.
+        self.turns.append(self.turns.popleft())
+
+    def player_stats(self):
+        """Print each players stats; name, total, hand, status, etc."""
+        lines = [unicode(self.players[i]) for i in self.players.keys()]
+        return  '\n'.join(lines)
 
     def __str__(self):
         """String representation."""
@@ -41,6 +54,5 @@ class Board(object):
         output.append('\nSHOE:\n')
         output.append(unicode(self.shoe))
         output.append('\n\nPLAYERS:\n')
-        for player in self.players:
-            output.append(unicode(player)+'\n')
+        output.append(self.player_stats())
         return ''.join(output)
