@@ -18,6 +18,7 @@ class Player(object):
             self.totals = [self.totals[0], self.totals[0] + 10]
 
     def calc_hand_status(self):
+        """Check for various hand statuses based off the total value."""
         self.calc_hand_total()
         for total in self.totals:
             self.status = ''
@@ -38,8 +39,8 @@ class Player(object):
                 self.status = '21!'
                 self.active = False
 
-
     def printable_hand(self):
+        """Return a printable string representing this players hand."""
         hand = [unicode(card).ljust(6, ' ') for card in self.hand]
         return ''.join(hand)
 
