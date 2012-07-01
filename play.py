@@ -16,7 +16,11 @@ def main():
             
             while player.active:
                 print board.player_stats()
-                input = raw_input('[H]it / [S]tand / [D]ouble Down? ')
+                msg = '? [H]it / [S]tand / [D]ouble Down'
+                equal_cards = player.hand[0].face == player.hand[1].face 
+                if len(player.hand) == 2 and equal_cards:
+                    msg += ' / Sp[l]it'
+                input = raw_input(msg + ': ')
 
                 if input.lower() == 'h':
                     player.hand.append(board.shoe.get_card())

@@ -12,6 +12,7 @@ class Card(object):
         """Initialization."""
         self.suit = suit
         self.value = value
+        self.rawvalue = value
         if self.value > 10:
             self.face = self.facemap[self.value]
             self.value = 10
