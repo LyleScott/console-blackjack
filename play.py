@@ -29,7 +29,7 @@ def main():
 
             player.myturn = False
 
-    print unicode(board)
+    #print unicode(board)
 
 
 if __name__ == '__main__':
