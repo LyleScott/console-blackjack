@@ -25,23 +25,31 @@ class Board(object):
         """Deal out two cards to each player."""
         # There probably aren't enough cards for a new game.
         if len(self.shoe.cards) < len(self.players) * 4:
-            return
+            return False
+
+        # Initialize player attributes to start a new hand.
+        for player in self.players.values():
+            player.hand = []
+            player.active = True
 
         # Deal each player a round of cards.
         for _ in xrange(2):
             for player_index in sorted(self.players.keys()):
-                self.turns.append(self.players[player_index]) 
+                player = self.players[player_index]
+                self.turns.append(player) 
                 card = self.shoe.get_card()
-                self.players[player_index].hand.append(card)
+                player.hand.append(card)
 
         # Check for dealer backjack.
         dealer = self.turns.popleft()
         dealer.calc_hand_status()
         if dealer.status == 'blackjack!':
-            self.turns = []
+            self.turns = deque()
         else:
             # Move the dealer from first position to last position.
             self.turns.append(dealer)
+
+        return True
 
     def player_stats(self):
         """Print each players stats; name, total, hand, status, etc."""

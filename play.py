@@ -2,12 +2,13 @@
 from src.board import Board
 
 N_PLAYERS = 3
+N_DECKS = 4
 
 def main():
-    board = Board(n_players=N_PLAYERS, n_decks=1)
+    board = Board(n_players=N_PLAYERS, n_decks=N_DECKS)
 
-    while board.shoe.cards and [i for i in xrange(N_PLAYERS) if board.players[i].active]:
-        board.deal()
+    while board.deal():
+        print 'Dealing...'
 
         while board.turns:
             player = board.turns.popleft()
