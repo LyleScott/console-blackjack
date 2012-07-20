@@ -10,7 +10,7 @@ class Shoe(object):
     def __init__(self, n_decks=None):
         """Initialization."""
         self.cards = []
-        for i in xrange(n_decks):
+        for i in range(n_decks):
             cards = Deck().cards
             self.cards.extend(cards)
 
@@ -44,7 +44,7 @@ class Shoe(object):
                 output.append('\n')
             i += 1
 
-            card = unicode(card).ljust(7, ' ')
+            card = card.ljust(7, ' ')
             output.append(card)
 
         return ''.join(output)

@@ -9,10 +9,10 @@ class Deck(object):
     linebreak_index = 5
 
     # Map the suit to a textual representation.
-    suits = {'heart':   u'\u2665',
-             'diamond': u'\u2666',
-             'club':    u'\u2667',
-             'spade':   u'\u2664',}
+    suits = {'heart':   '\u2665',
+             'diamond': '\u2666',
+             'club':    '\u2667',
+             'spade':   '\u2664',}
 
 
     def __init__(self, name='Deck', cards=None):
@@ -26,7 +26,7 @@ class Deck(object):
         """Generate a deck of 52 unshuffled cards."""
         self.cards = []
         for suit in self.suits.values():
-            for value in xrange(1, 14):
+            for value in range(1, 14):
                 card = Card(suit, value)
                 self.cards.append(card)
                 if shuffled:

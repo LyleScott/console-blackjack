@@ -2,7 +2,7 @@
 class Card(object):
 
     # Map some values to representface cards to a 
-    facemap = {1 : 'A',
+    facemap = { 1: 'A',
                11: 'J',
                12: 'Q',
                13: 'K',}
@@ -23,4 +23,4 @@ class Card(object):
 
     def __str__(self):
         """String representation."""
-        return '%s-%s' % (self.suit, self.face,)
+        return '%s%s' % (self.suit, self.face,)

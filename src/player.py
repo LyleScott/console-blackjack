@@ -1,62 +1,44 @@
 
-class Player(object):
+from collections import deque
 
-    def __init__(self, name, hand=None):
+class Player(object):
+    
+    HAND_STATUS_WIDTH = 9
+    HAND_TOTAL_WIDTH = 5
+
+    def __init__(self, name):
         """Initialization."""
         self.name = name
-        self.hand = hand or []
-        self.active = True
-        self.status = ''
-        self.totals = []
+        self.hands = deque()
+        self.current_hand = 0
         self.myturn = False
-
-    def calc_hand_total(self):
-        """Calculate the total value of the hand."""
-        values = [card.value for card in self.hand]
-        self.totals = [sum(values),]
-        if 1 in values:
-            self.totals = [self.totals[0], self.totals[0] + 10]
-
-    def calc_hand_status(self):
-        """Check for various hand statuses based off the total value."""
-        self.calc_hand_total()
-        for total in self.totals:
-            self.status = ''
-
-            # Bust.
-            if ((total > 21 and len(self.totals) == 1) or
-                (self.totals[0] > 21 and self.totals[1] > 21)):
-                self.status = 'bust!'
-                self.active = False
-
-            # Blackjack.
-            elif len(self.hand) == 2 and total == 21:
-                self.status = 'blackjack!'
-                self.active = False
-
-            # 21
-            elif total == 21:
-                self.status = '21!'
-                self.active = False
-
-    def printable_hand(self):
-        """Return a printable string representing this players hand."""
-        hand = [unicode(card).ljust(6, ' ') for card in self.hand]
-        return ''.join(hand)
+        
+    def get_active_hands(self):
+        return [hand for hand in self.hands if hand.status() == 'active']
 
     def __str__(self):
         """String representation."""
 
-        if self.myturn:
-            prefix = '*'
-        else:
-            prefix = ' '
+        output = []
 
-        self.calc_hand_status()
+        for i in range(len(self.hands)):
+            if self.myturn and i == self.current_hand:
+                prefix = '*'
+            else:
+                prefix = ' '
 
-        total = '/'.join(map(str, self.totals))
-        total = total.ljust(5, ' ')
+            is_dealer = not type(self) == Player
+            if not is_dealer or self.myturn:
+                hand = self.hands[i]
+                hand_status = self.hands[i].status().ljust(self.HAND_STATUS_WIDTH)
+                totals = hand.get_totals()
+                total = '/'.join(map(str, totals)).ljust(self.HAND_TOTAL_WIDTH)
+            else:
+                hand = '%s    ??' % self.hands[i].cards[0]
+                hand_status = '?' * self.HAND_STATUS_WIDTH
+                total = '?' * self.HAND_TOTAL_WIDTH 
+                
+            output.append('%s%s --> [%s] (%s) %s' % (self.name, prefix,
+                                                     hand_status, total, hand,))
 
-        return '%s%s --> (%s) %s %s' % (self.name, prefix, total,
-                                        self.printable_hand(), self.status)
-
+        return '\n'.join(output)
