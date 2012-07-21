@@ -9,9 +9,7 @@ N_DECKS = 4
 def check_version():
     """Python 3 required to run this!"""
     pyversion = platform.python_version()
-    
     v = int(pyversion[0])
-    
     if v < 3:
         print('You need Python 3.x to run this.')
         sys.exit(-2)
