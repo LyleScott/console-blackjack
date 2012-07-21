@@ -59,12 +59,26 @@ class Board(object):
         lines = [str(player) for player in [self.dealer,] + self.players]
         return  '\n'.join(lines)
     
+    def check_dealer_blackjack(self, print_stats=True):
+        hand = self.dealer.hands[0]
+        if hand.status() == 'blackjack':
+            if print_stats:
+                self.dealer.current_hand = hand
+                print(self.player_stats())
+                print('\nDealer blackjack!')
+                print('\n%s\n' % self.get_winners_and_losers())
+            return True
+        return False
+    
     def play(self):
         """Play the game."""
         while self.deal():
             print('Dealing...')
             
-            for player in self.players + [self.dealer,]:
+            if self.check_dealer_blackjack():
+                continue
+            
+            for player in self.players:
                 
                 for hand in player.hands:
                     
@@ -98,9 +112,31 @@ class Board(object):
                         print(self.player_stats())
                             
                     player.current_hand = None
+            
+            self.deal_dealers_hand()
                     
+            print(self.player_stats())
             print('\n%s\n' % self.get_winners_and_losers())
             input('hit any key to deal again...')
+            
+    def deal_dealers_hand(self):
+        """Automate the dealer's hand."""
+        hand = self.dealer.hands[0]
+        self.dealer.current_hand = hand
+        while True:
+            
+            totals = hand.get_totals()
+            print(totals)
+            
+            if len(totals) > 1 and totals[1] <= 21:
+                total = totals[1]
+            else:
+                total = totals[0]
+                
+            if total >= 17:
+                break 
+
+            hand.cards.append(self.shoe.get_card())
             
     def get_winners_and_losers(self):
         """Print a list of players and their win/lose/push status."""
@@ -115,7 +151,7 @@ class Board(object):
                 else:
                     total = totals[0]
     
-                if total > 21 or total < dealer_total:
+                if total > 21 or (dealer_total <= 21 and total < dealer_total):
                     status = 'loser'
                 elif total == dealer_total:
                     status = 'push'

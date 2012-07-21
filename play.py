@@ -4,7 +4,7 @@ import sys
 from src.board import Board
 
 N_PLAYERS = 3
-N_DECKS = 4
+N_DECKS = 1
 
 def check_version():
     """Python 3 required to run this!"""
