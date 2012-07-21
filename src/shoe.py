@@ -1,6 +1,6 @@
 import random
-from src.deck import Deck
 
+from src.deck import Deck
 
 class Shoe(object):
 

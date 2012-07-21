@@ -1,4 +1,3 @@
-
 from src.card import Card
 
 class Hand(object):

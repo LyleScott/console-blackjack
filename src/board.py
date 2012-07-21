@@ -1,5 +1,7 @@
-from collections import deque
+import string
+import os
 
+from collections import deque
 
 from src.dealer import Dealer
 from src.hand import Hand
@@ -50,13 +52,15 @@ class Board(object):
 
         return True
 
-    def player_stats(self):
+    def player_stats(self, clear_screen=True):
         """Print each players stats; name, total, hand, status, etc."""
+        if clear_screen:
+            os.system( [ 'clear', 'cls' ][ os.name == 'nt' ] )
         lines = [str(player) for player in [self.dealer,] + self.players]
         return  '\n'.join(lines)
     
     def play(self):
-        """TODO"""
+        """Play the game."""
         while self.deal():
             print('Dealing...')
             
@@ -64,9 +68,9 @@ class Board(object):
                 
                 for hand in player.hands:
                     
-                    print(self.player_stats())
-                    
                     player.current_hand = hand
+                    
+                    print(self.player_stats())
                     
                     while hand.active is True:
                         
@@ -94,13 +98,15 @@ class Board(object):
                         print(self.player_stats())
                             
                     player.current_hand = None
-            
-            print(self.get_winners_and_losers())
+                    
+            print('\n%s\n' % self.get_winners_and_losers())
+            input('hit any key to deal again...')
             
     def get_winners_and_losers(self):
+        """Print a list of players and their win/lose/push status."""
         dealer_total = self.dealer.hands[0].get_totals()[0]
         stats = []
-        for player in self.players:
+        for i, player in enumerate(self.players):
             for hand in player.hands:
                 totals = hand.get_totals()
                 
@@ -118,7 +124,12 @@ class Board(object):
                 else:
                     status = '<unknown>'
                 
-                stats.append('%s -- %s' % (player.name, status,))
+                if len(player.hands) > 1:
+                    name = '%s%s' % (player.name, string.ascii_lowercase[i],)
+                else:
+                    name = player.name
+                
+                stats.append('%s -- %s' % (name, status,))
             
         return '\n'.join(stats)
 
