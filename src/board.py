@@ -32,7 +32,6 @@ class Board(object):
         # Initialize dealer/player attributes to start a new hand.
         for player in self.players + [self.dealer,]:
             player.hands = [Hand(),]
-            player.active = True
 
         # Deal each player a round of cards.
         for _ in range(2):
@@ -62,15 +61,17 @@ class Board(object):
             print('Dealing...')
             
             for player in self.players + [self.dealer,]:
-                player.myturn = True
                 
-                for hand in player.get_active_hands():
+                for hand in player.hands:
                     
-                    while hand.status() == 'active':
+                    print(self.player_stats())
                     
-                        print(self.player_stats())
-    
+                    player.current_hand = hand
+                    
+                    while hand.active is True:
+                        
                         msg = '? [H]it / [S]tand / [D]ouble Down'
+                        
                         face1 = hand.cards[0].face
                         
                         if len(hand.cards) > 1:
@@ -83,15 +84,16 @@ class Board(object):
                         if userinput.lower().strip() == 'h':
                             hand.cards.append(self.shoe.get_card())
                         elif userinput.lower().strip() == 's':
-                            hand.active = False
                             break
                         elif userinput.lower().strip() == 'd':
                             pass
                         elif userinput.lower().strip() == 'l':
                             split_card = hand.cards.pop()
                             player.hands.append(Hand(cards=split_card))
-
-                player.myturn = False
+                            
+                        print(self.player_stats())
+                            
+                    player.current_hand = None
             
             print(self.get_winners_and_losers())
             
@@ -107,14 +109,14 @@ class Board(object):
                 else:
                     total = totals[0]
     
-                if total > 21:
-                    status = 'lose'
+                if total > 21 or total < dealer_total:
+                    status = 'loser'
                 elif total == dealer_total:
                     status = 'push'
                 elif total <= 21 and total > dealer_total:
                     status = 'winner'
                 else:
-                    status = 'WTF'
+                    status = '<unknown>'
                 
                 stats.append('%s -- %s' % (player.name, status,))
             

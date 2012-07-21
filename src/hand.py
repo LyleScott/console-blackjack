@@ -6,6 +6,8 @@ class Hand(object):
     def __init__(self, cards=None):
         """Initialization."""
         
+        self.active = True
+        
         if isinstance(cards, Card):
             cards = [cards,]
         
@@ -37,23 +39,27 @@ class Hand(object):
         """Check for various hand statuses based off the total value."""
         totals = self.get_totals()
 
-        for total in totals:
-            if ((total > 21 and len(totals) == 1) or
-                (totals[0] > 21 and totals[1] > 21)):
-                status = 'bust'
-            elif len(self.cards) == 2 and total == 21: 
-                status = 'blackjack'
-                break
-            elif total == 21: 
-                status = '21'
-                break
-            else:
-                status = 'active'
+        if totals[0] > 21:
+            self.active = False
+            status = 'bust'
+        else:
+            for total in totals:
+                if len(self.cards) == 2 and total == 21: 
+                    status = 'blackjack'
+                    self.active = False
+                    break
+                elif total == 21: 
+                    status = '21'
+                    self.active = False
+                    break
+                else:
+                    status = 'active'
 
         return status
 
     def __str__(self):
         """Return a string representing this hand."""
         hand = [str(card).ljust(6, ' ') for card in self.cards]
+        
         return ''.join(hand)
 
