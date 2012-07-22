@@ -8,6 +8,9 @@ py-blackjack-foo
 * can track various card counting algorithms
     * not implemented
 
+About
+-----
+
 A console based blackjack game that is both playable and can analyze and
 interface with various card counting algorithms.
 
@@ -22,7 +25,14 @@ in-game analytics. Not to mention, console blackjack is neat in a nerdy way!
 There are some constants you can play with in /play.py for playing in manual
 mode.
 
+To Play
+-------
 
-Author: Lyle Scott II
-Email : lyle@digitalfoo.net
-Web   : http://digitalfoo.net
+python player.py
+
+Contact Me
+----------
+
+Lyle Scott, III
+lyle@digitalfoo.net
+http://digitalfoo.net
