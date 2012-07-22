@@ -1,6 +1,10 @@
 py-blackjack-foo
 ================
 
+* CLI/console based blackjack against an automated dealer
+* Basic Strategy cheat sheet
+* can track various card counting algorithms
+
 A console based blackjack game that is both playable and can analyze and
 interface with various card counting algorithms.
 
