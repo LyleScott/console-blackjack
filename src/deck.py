@@ -1,7 +1,9 @@
+# -*- coding: utf-8
+from __future__ import unicode_literals
+
 import random
 
 from src.card import Card
-
 
 class Deck(object):
 
@@ -9,10 +11,14 @@ class Deck(object):
     linebreak_index = 5
 
     # Map the suit to a textual representation.
-    suits = {'heart':   '\u2665',
-             'diamond': '\u2666',
-             'club':    '\u2667',
-             'spade':   '\u2664',}
+    #suits = {'heart':   '\u2665',
+    #         'diamond': '\u2666',
+    #         'club':    '\u2667',
+    #         'spade':   '\u2664',}
+    suits = {'heart':   '♥',
+             'diamond': '♦',
+             'club':    '♧',
+             'spade':   '♤',}
 
 
     def __init__(self, name='Deck', cards=None):

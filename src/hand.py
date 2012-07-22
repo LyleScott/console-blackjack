@@ -58,7 +58,7 @@ class Hand(object):
 
     def __str__(self):
         """Return a string representing this hand."""
-        hand = [str(card).ljust(6, ' ') for card in self.cards]
+        hand = [unicode(card).ljust(6, ' ') for card in self.cards]
         
         return ''.join(hand)
 

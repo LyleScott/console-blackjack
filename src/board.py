@@ -38,7 +38,7 @@ class Board(object):
         # Deal each player a round of cards.
         for _ in range(2):
             for player in self.players + [self.dealer,]:
-                self.turns.append(player) 
+                self.turns.append(player)
                 card = self.shoe.get_card()
                 player.hands[0].cards.append(card)
 
@@ -56,9 +56,9 @@ class Board(object):
         """Print each players stats; name, total, hand, status, etc."""
         if clear_screen:
             os.system( [ 'clear', 'cls' ][ os.name == 'nt' ] )
-        lines = [str(player) for player in [self.dealer,] + self.players]
+        lines = [unicode(player) for player in [self.dealer,] + self.players]
         return  '\n'.join(lines)
-    
+
     def check_dealer_blackjack(self, print_stats=True):
         hand = self.dealer.hands[0]
         if hand.status() == 'blackjack':
@@ -69,36 +69,36 @@ class Board(object):
                 print('\n%s\n' % self.get_winners_and_losers())
             return True
         return False
-    
+
     def play(self):
         """Play the game."""
         while self.deal():
             print('Dealing...')
-            
+
             if self.check_dealer_blackjack():
                 continue
-            
+
             for player in self.players:
-                
+
                 for hand in player.hands:
-                    
+
                     player.current_hand = hand
-                    
+
                     print(self.player_stats())
-                    
+
                     while hand.active is True:
-                        
+
                         msg = '? [H]it / [S]tand / [D]ouble Down'
-                        
+
                         face1 = hand.cards[0].face
-                        
+
                         if len(hand.cards) > 1:
                             face2 = hand.cards[1].face
                             if len(hand.cards) == 2 and face1 == face2:
                                 msg += ' / Sp[l]it'
-                            
-                        userinput = input('%s: ' % msg)
-        
+
+                        userinput = raw_input('%s: ' % msg)
+
                         if userinput.lower().strip() == 'h':
                             hand.cards.append(self.shoe.get_card())
                         elif userinput.lower().strip() == 's':
@@ -108,65 +108,80 @@ class Board(object):
                         elif userinput.lower().strip() == 'l':
                             split_card = hand.cards.pop()
                             player.hands.append(Hand(cards=split_card))
-                            
+
                         print(self.player_stats())
-                            
+
                     player.current_hand = None
-            
+
             self.deal_dealers_hand()
-                    
+
             print(self.player_stats())
             print('\n%s\n' % self.get_winners_and_losers())
-            input('hit any key to deal again...')
-            
+            raw_input('hit any key to deal again...')
+
     def deal_dealers_hand(self):
         """Automate the dealer's hand."""
         hand = self.dealer.hands[0]
         self.dealer.current_hand = hand
         while True:
-            
+
             totals = hand.get_totals()
             print(totals)
-            
+
             if len(totals) > 1 and totals[1] <= 21:
                 total = totals[1]
             else:
                 total = totals[0]
-                
+
             if total >= 17:
-                break 
+                break
 
             hand.cards.append(self.shoe.get_card())
-            
+
     def get_winners_and_losers(self):
         """Print a list of players and their win/lose/push status."""
-        dealer_total = self.dealer.hands[0].get_totals()[0]
+        totals = self.dealer.hands[0].get_totals()
+        if len(totals) > 1 and totals[1] <= 21:
+            dealer_total = totals[1]
+        else:
+            dealer_total = totals[0]
+
         stats = []
         for i, player in enumerate(self.players):
             for hand in player.hands:
                 totals = hand.get_totals()
-                
-                if len(totals) > 1 and totals[1] < 21:
+
+                if len(totals) > 1 and totals[1] <= 21:
                     total = totals[1]
                 else:
                     total = totals[0]
-    
-                if total > 21 or (dealer_total <= 21 and total < dealer_total):
+
+                # Player's hand busted. (always a lose)
+                # Player's hand is more than the dealer's hand.
+                if total > 21 or (dealer_total <= 21 and dealer_total > total):
                     status = 'loser'
+
+                # Player's hand is the same as the dealers hand.
                 elif total == dealer_total:
                     status = 'push'
-                elif total <= 21 and total > dealer_total:
+
+                # Dealer busted.
+                # Player's hand is greater than the dealer's and didn't bust.
+                elif dealer_total > 21 or total > dealer_total:
                     status = 'winner'
+
+                # There exists a bug! Oh noes...
                 else:
-                    status = '<unknown>'
-                
+                    status = ('<unknown>: total: %d   dealer_total: %s' %
+                              (total, dealer_total,))
+
                 if len(player.hands) > 1:
                     name = '%s%s' % (player.name, string.ascii_lowercase[i],)
                 else:
                     name = player.name
-                
+
                 stats.append('%s -- %s' % (name, status,))
-            
+
         return '\n'.join(stats)
 
     def __str__(self):
@@ -176,5 +191,5 @@ class Board(object):
         output.append(self.shoe)
         output.append('\n\nPLAYERS:\n')
         output.append(self.player_stats())
-        
+
         return ''.join(output)
