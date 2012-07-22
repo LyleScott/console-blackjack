@@ -28,6 +28,8 @@ mode.
 To Play
 -------
 
+This uses the Python standard library, nothing more. Use Python 2.x.
+
 python player.py
 
 Contact Me
