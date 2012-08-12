@@ -24,8 +24,8 @@ class Player(object):
             is_dealer = not type(self) == Player
             if not is_dealer or hand == self.current_hand:
                 hand_status = hand.status().ljust(self.HAND_STATUS_WIDTH)
-                totals = hand.get_totals()
-                total = '/'.join(map(str, totals)).ljust(self.HAND_TOTAL_WIDTH)
+                total = '/'.join(map(str, hand.totals))
+                total = total.ljust(self.HAND_TOTAL_WIDTH)
             else:
                 hand = '%s    ??' % hand.cards[0]
                 hand_status = '?' * self.HAND_STATUS_WIDTH

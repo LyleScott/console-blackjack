@@ -6,11 +6,18 @@ class Hand(object):
         """Initialization."""
         
         self.active = True
+        self.totals = (0, 0,)
         
         if isinstance(cards, Card):
             cards = [cards,]
         
         self.cards = cards or []
+
+    def __str__(self):
+        """Return a string representing this hand."""
+        hand = [unicode(card).ljust(6, ' ') for card in self.cards]
+        
+        return ''.join(hand)
 
     def get_totals(self):
         """Calculate the total value of the hand."""
@@ -33,16 +40,23 @@ class Hand(object):
             total = (totals[0],)
         
         return total
+    
+    def set_totals(self):
+        """Calculate and set the totals for this object."""
+        self.totals = self.get_totals()
+    
+    def add_card(self, card):
+        """Add a card to the deck and automatically update the totals."""
+        self.cards.append(card)
+        self.set_totals()
 
     def status(self):
         """Check for various hand statuses based off the total value."""
-        totals = self.get_totals()
-
-        if totals[0] > 21:
+        if self.totals[0] > 21:
             self.active = False
             status = 'bust'
         else:
-            for total in totals:
+            for total in self.totals:
                 if len(self.cards) == 2 and total == 21: 
                     status = 'blackjack'
                     self.active = False
@@ -55,10 +69,3 @@ class Hand(object):
                     status = 'active'
 
         return status
-
-    def __str__(self):
-        """Return a string representing this hand."""
-        hand = [unicode(card).ljust(6, ' ') for card in self.cards]
-        
-        return ''.join(hand)
-

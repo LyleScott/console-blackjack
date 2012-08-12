@@ -41,7 +41,7 @@ class Board(object):
             for player in self.players + [self.dealer,]:
                 self.turns.append(player)
                 card = self.shoe.get_card()
-                player.hands[0].cards.append(card)
+                player.hands[0].add_card(card)
 
         # Check for dealer backjack.
         status = self.dealer.hands[0].status()
@@ -73,44 +73,50 @@ class Board(object):
         return False
 
     def play(self):
-        """Play the game."""
+        """Manually step through gameplay as each player and automate the
+        dealers hand.
+        """
         while self.deal():
             print('Dealing...')
 
+            # If the dealer is delt blackjack, everyone loses. :(
             if self.check_dealer_blackjack():
                 continue
 
             for player in self.players:
 
+                # A player can have multiple hands if they split...
                 for hand in player.hands:
 
                     player.current_hand = hand
-
+                    
                     print(self.player_stats())
 
                     while hand.active is True:
 
                         msg = '? [H]it / [S]tand'
                         
-                        can_double_down = (not constants.CANT_DOUBLE_DOWN_AFTER
-                                           or hand.get_totals()[0] <=  
+                        # Some games set a limit for which you have the option
+                        # to double down. Enforce this if set.
+                        can_double_down = (constants.CANT_DOUBLE_DOWN_AFTER < 0
+                                           or hand.totals[0] <=  
                                            constants.CANT_DOUBLE_DOWN_AFTER)
-                        
-                        if can_double_down:
+                        if can_double_down is True:
                             msg += ' / [D]ouble Down'
 
                         face1 = hand.cards[0].face
 
+                        # Give the option to split if the cards are the same.
                         if len(hand.cards) > 1:
                             face2 = hand.cards[1].face
                             if len(hand.cards) == 2 and face1 == face2:
                                 msg += ' / Sp[l]it'
 
+                        # Make the next move as per the user's decision.
                         userinput = raw_input('%s: ' % msg)
                         userinput = userinput.lower().strip()
-
                         if userinput == 'h':
-                            hand.cards.append(self.shoe.get_card())
+                            hand.add_card(self.shoe.get_card())
                         elif userinput == 's':
                             break
                         elif userinput == 'd' and can_double_down is True:
@@ -123,10 +129,13 @@ class Board(object):
 
                     player.current_hand = None
 
+            # Automate the dealers hand since it has a specific set of rules.
             self.deal_dealers_hand()
 
+            # Print the final players summary for this hand.
             print(self.player_stats())
             print('\n%s\n' % self.get_winners_and_losers())
+            
             raw_input('hit any key to deal again...')
 
     def deal_dealers_hand(self):
@@ -135,7 +144,7 @@ class Board(object):
         self.dealer.current_hand = hand
         
         while True:
-            totals = hand.get_totals()
+            totals = hand.totals
             print(totals)
 
             if len(totals) > 1 and totals[1] <= 21:
@@ -146,11 +155,11 @@ class Board(object):
             if (constants.DEALERS_HITS_ON_17 and total > 17) or total >= 17:
                 break
 
-            hand.cards.append(self.shoe.get_card())
+            hand.add_card(self.shoe.get_card())
 
     def get_winners_and_losers(self):
         """Print a list of players and their win/lose/push status."""
-        totals = self.dealer.hands[0].get_totals()
+        totals = self.dealer.hands[0].totals
         if len(totals) > 1 and totals[1] <= 21:
             dealer_total = totals[1]
         else:
@@ -159,7 +168,7 @@ class Board(object):
         stats = []
         for i, player in enumerate(self.players):
             for hand in player.hands:
-                totals = hand.get_totals()
+                totals = hand.totals
 
                 if len(totals) > 1 and totals[1] <= 21:
                     total = totals[1]
