@@ -124,6 +124,7 @@ class Board(object):
                         elif userinput == 'l':
                             split_card = hand.cards.pop()
                             player.hands.append(Hand(cards=split_card))
+                            hand.set_totals()
 
                         print(self.player_stats())
 
@@ -166,8 +167,8 @@ class Board(object):
             dealer_total = totals[0]
 
         stats = []
-        for i, player in enumerate(self.players):
-            for hand in player.hands:
+        for player in self.players:
+            for i, hand in enumerate(player.hands):
                 totals = hand.totals
 
                 if len(totals) > 1 and totals[1] <= 21:
@@ -198,6 +199,7 @@ class Board(object):
                     name = '%s%s' % (player.name, string.ascii_lowercase[i],)
                 else:
                     name = player.name
+                name = name.ljust(3)
 
                 stats.append('%s -- %s' % (name, status,))
 

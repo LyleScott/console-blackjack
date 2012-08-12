@@ -1,4 +1,7 @@
+import string
+
 from collections import deque
+
 
 class Player(object):
     
@@ -10,16 +13,17 @@ class Player(object):
         self.name = name
         self.hands = deque()
         self.current_hand = None
+        self.chipsvalue = 0  
 
     def __str__(self):
         """String representation."""
         output = []
 
-        for hand in self.hands:
+        for i, hand in enumerate(self.hands):
             if hand == self.current_hand:
-                prefix = '*'
+                current_turn = '*'
             else:
-                prefix = ' '
+                current_turn = ''
 
             is_dealer = not type(self) == Player
             if not is_dealer or hand == self.current_hand:
@@ -31,7 +35,16 @@ class Player(object):
                 hand_status = '?' * self.HAND_STATUS_WIDTH
                 total = '?' * self.HAND_TOTAL_WIDTH 
                 
-            output.append('%s%s --> [%s] (%s) %s' % (self.name, prefix,
-                                                     hand_status, total, hand,))
+            num_hands = len(self.hands)
+            if num_hands > 1:
+                name_suffix = string.ascii_lowercase[i]
+            else:
+                name_suffix = ''
+                
+            label = '%s%s%s' % (self.name, name_suffix, current_turn,)
+            label = label.ljust(4)
+                
+            output.append('%s --> [%s] (%s) %s' % (label, hand_status, total,
+                                                   hand,))
 
         return '\n'.join(output)

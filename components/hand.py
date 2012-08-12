@@ -4,14 +4,14 @@ class Hand(object):
 
     def __init__(self, cards=None):
         """Initialization."""
-        
         self.active = True
-        self.totals = (0, 0,)
-        
+        self.bet = 0
+    
         if isinstance(cards, Card):
             cards = [cards,]
         
-        self.cards = cards or []
+        self.cards = cards or []    
+        self.totals = self.get_totals()
 
     def __str__(self):
         """Return a string representing this hand."""
