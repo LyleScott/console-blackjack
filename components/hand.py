@@ -1,4 +1,4 @@
-from src.card import Card
+from components.card import Card
 
 class Hand(object):
 

@@ -1,6 +1,6 @@
 import sys
 
-from src.player import Player
+from components.player import Player
 
 class Dealer(Player):
 

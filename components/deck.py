@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 import random
 
-from src.card import Card
+from components.card import Card
 
 class Deck(object):
 

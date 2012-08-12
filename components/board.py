@@ -3,10 +3,10 @@ import os
 
 from collections import deque
 
-from src.dealer import Dealer
-from src.hand import Hand
-from src.player import Player
-from src.shoe import Shoe
+from components.dealer import Dealer
+from components.hand import Hand
+from components.player import Player
+from components.shoe import Shoe
 
 
 class Board(object):

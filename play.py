@@ -1,4 +1,4 @@
-from src.board import Board
+from components.board import Board
 
 N_PLAYERS = 3
 N_DECKS = 4

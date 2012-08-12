@@ -1,6 +1,6 @@
 import random
 
-from src.deck import Deck
+from components.deck import Deck
 
 class Shoe(object):
 
@@ -10,7 +10,7 @@ class Shoe(object):
     def __init__(self, n_decks=None):
         """Initialization."""
         self.cards = []
-        for i in range(n_decks):
+        for _ in range(n_decks):
             cards = Deck().cards
             self.cards.extend(cards)
 
