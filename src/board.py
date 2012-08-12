@@ -60,6 +60,7 @@ class Board(object):
         return  '\n'.join(lines)
 
     def check_dealer_blackjack(self, print_stats=True):
+        """Check if the dealer has blackjack."""
         hand = self.dealer.hands[0]
         if hand.status() == 'blackjack':
             if print_stats:
@@ -123,8 +124,8 @@ class Board(object):
         """Automate the dealer's hand."""
         hand = self.dealer.hands[0]
         self.dealer.current_hand = hand
+        
         while True:
-
             totals = hand.get_totals()
             print(totals)
 
