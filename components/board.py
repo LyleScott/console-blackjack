@@ -3,6 +3,7 @@ import os
 
 from collections import deque
 
+import constants
 from components.dealer import Dealer
 from components.hand import Hand
 from components.player import Player
@@ -89,7 +90,14 @@ class Board(object):
 
                     while hand.active is True:
 
-                        msg = '? [H]it / [S]tand / [D]ouble Down'
+                        msg = '? [H]it / [S]tand'
+                        
+                        can_double_down = (not constants.CANT_DOUBLE_DOWN_AFTER
+                                           or hand.get_totals()[0] <=  
+                                           constants.CANT_DOUBLE_DOWN_AFTER)
+                        
+                        if can_double_down:
+                            msg += ' / [D]ouble Down'
 
                         face1 = hand.cards[0].face
 
@@ -99,14 +107,15 @@ class Board(object):
                                 msg += ' / Sp[l]it'
 
                         userinput = raw_input('%s: ' % msg)
+                        userinput = userinput.lower().strip()
 
-                        if userinput.lower().strip() == 'h':
+                        if userinput == 'h':
                             hand.cards.append(self.shoe.get_card())
-                        elif userinput.lower().strip() == 's':
+                        elif userinput == 's':
                             break
-                        elif userinput.lower().strip() == 'd':
+                        elif userinput == 'd' and can_double_down is True:
                             pass
-                        elif userinput.lower().strip() == 'l':
+                        elif userinput == 'l':
                             split_card = hand.cards.pop()
                             player.hands.append(Hand(cards=split_card))
 
@@ -134,7 +143,7 @@ class Board(object):
             else:
                 total = totals[0]
 
-            if total >= 17:
+            if (constants.DEALERS_HITS_ON_17 and total > 17) or total >= 17:
                 break
 
             hand.cards.append(self.shoe.get_card())
