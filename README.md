@@ -1,5 +1,5 @@
-py-blackjack-foo
-================
+Console Blackjack
+=================
 
 * CLI/console based blackjack against an automated dealer
     * there is no betting yet
@@ -11,14 +11,13 @@ py-blackjack-foo
 About
 -----
 
-A console based blackjack game that is both playable and can analyze and
-interface with various card counting algorithms.
+A console based blackjack game that is playable via the console (command line).
 
 I started this project to analyze blackjack gameplay using Basic Strategy and
-various card counting algorithms.
+various card counting algorithms... as in most projects, this is still a TODO.
 
-To start out, I wrote a console based implementation of blackjack that a user
-can manually play against an automated dealer. I used this to verify that
+I did end up writing a neat console based implementation of blackjack that a
+user can manually play against an automated dealer. I used this to verify that
 gameplay was correct to start the implementation and open up possibilities for
 in-game analytics. Not to mention, console blackjack is neat in a nerdy way!
 
