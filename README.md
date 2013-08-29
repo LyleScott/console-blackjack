@@ -1,6 +1,7 @@
 Console Blackjack
 =================
 
+* Written in Python 2.x using just the stdlib.
 * CLI/console based blackjack against an automated dealer
     * there is no betting yet
 * Basic Strategy cheat sheet
